@@ -30,7 +30,7 @@ public class PostController {
 
     @PostMapping("/addpost")
     public String addNewPost(@ModelAttribute("postToAdd") Post post) {
-        System.out.println("dodajemy nowy post" + post.getMessage());
+        System.out.println("dodajemy nowy post: " + post.getMessage());
         service.addNewPost(post);
         return "mainpage";
     }
