@@ -1,22 +1,12 @@
 package com.sda.twitter.model.dto;
 
 
-public class UserDto extends UserDetailsDto {
+public class UserDto {
 
     private Long id;
     private String name;
     private String surname;
     private int age;
-
-    public UserDto() {
-    }
-
-    public UserDto(Long id, String name, String surname, int age) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-    }
 
     public Long getId() {
         return id;

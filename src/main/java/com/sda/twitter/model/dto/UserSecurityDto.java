@@ -2,11 +2,11 @@ package com.sda.twitter.model.dto;
 
 import javax.validation.constraints.Size;
 
-public class UserDetailsDto{
+public class UserSecurityDto extends UserDto {
 
-    @Size(min = 3, max = 20, message = "Login lenght should be between 3 and 20 characters.")
+    @Size(min = 3, max = 20, message = "Login length should be between 3 and 20 characters.")
     protected String login;
-    @Size(min = 4, max = 20, message = "Password lenght should be between 4 and 20 characters.")
+    @Size(min = 4, max = 20, message = "Password length should be between 4 and 20 characters.")
     protected String password;
     protected String role;
 

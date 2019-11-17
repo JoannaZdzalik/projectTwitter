@@ -1,7 +1,8 @@
-insert into user(id, name, surname, age) values (1, 'Asia', 'Kot', 20);
-insert into user(id, name, surname, age) values (2, 'Kasia', 'Pies', 22);
-insert into user(id, name, surname, age) values (3, 'Jacek', 'Kruk', 40);
-insert into user(id, name, surname, age) values (4, 'Bartek', 'Nowak', 33);
+INSERT INTO USER (id, age, name, surname) VALUES (16, 20, 'EWA', 'KOT');
+INSERT INTO USER (id, age, name, surname) VALUES (17, 28, 'ELA', 'NOWAK');
+
+INSERT INTO USERSECURITY (id, login, password, role) VALUES (16, 'admin', 'admin', 'ROLE_ADMIN')
+
 
 
 

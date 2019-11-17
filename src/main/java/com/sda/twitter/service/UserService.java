@@ -1,10 +1,14 @@
 package com.sda.twitter.service;
 
 import com.sda.twitter.model.dto.UserDto;
+import com.sda.twitter.model.dto.UserSecurityDto;
 import com.sda.twitter.model.entity.User;
+import com.sda.twitter.model.entity.UserSecurity;
 import com.sda.twitter.repository.UserRepository;
+import com.sda.twitter.repository.UserSecurityRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,15 +18,20 @@ public class UserService {
     private ModelMapper mapper;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserSecurityRepository userSecurityRepository;
 
-    public void addUser(UserDto userDto) {
-        User user = mapper.map(userDto, User.class);
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
+
+    public void addUser(UserSecurityDto userSecurityDto) {
+        UserSecurity userSec = mapper.map(userSecurityDto, UserSecurity.class);
         System.out.println("Zmapowany user: "
-                + user.getId() + " "
-                + user.getName() + " "
-                + user.getSurname() + " "
-                + user.getAge());
-        userRepository.save(user);
+                + userSec.getId() + " "
+                + userSec.getName() + " "
+                + userSec.getSurname() + " "
+                + userSec.getAge());
+        userSec.setPassword(bCryptPasswordEncoder.encode(userSec.getPassword()));
+        userSec.setRole("ROLE_USER");
+        userSecurityRepository.save(userSec);
     }
 }

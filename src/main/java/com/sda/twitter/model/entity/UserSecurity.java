@@ -11,7 +11,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class UserDetails extends User {
+@Table(name="usersecurity")
+public class UserSecurity extends User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +20,4 @@ public class UserDetails extends User {
     private String login;
     private String password;
     private String role;
-
-//    @OneToOne
-//    @JoinColumn()
-//    private User user;
-
-
-
 }

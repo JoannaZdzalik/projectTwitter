@@ -8,13 +8,13 @@ import lombok.Setter;
 
 import com.sda.twitter.model.activity.Post;
 
-@Getter
-@Setter
 @Entity
+@Table(name="user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
     private String name;
     private String surname;

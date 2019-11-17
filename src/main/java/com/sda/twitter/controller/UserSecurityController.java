@@ -1,7 +1,7 @@
 package com.sda.twitter.controller;
 
-import com.sda.twitter.model.dto.UserDetailsDto;
-import com.sda.twitter.service.UserDetailsService;
+import com.sda.twitter.model.dto.UserSecurityDto;
+import com.sda.twitter.service.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -13,19 +13,19 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 
 @Controller
-public class UserDetailsController {
+public class UserSecurityController {
 
     @Autowired
-    private UserDetailsService service;
+    private UserSecurityService service;
 
     @GetMapping("/adduserdetails")
     public ModelAndView getUserDetailsView() {
-        return new ModelAndView("adduserdetails", "userDetails", new UserDetailsDto());
+        return new ModelAndView("adduserdetails", "userDetails", new UserSecurityDto());
     }
 
     @PostMapping("/adduserdetails")
-    public String addNewUserDetails(@ModelAttribute @Valid UserDetailsDto userDetailsDto, BindingResult result) {  //Valid- włączam walidację dla hasła
-        service.addUserDetails(userDetailsDto, result);
+    public String addNewUserDetails(@ModelAttribute @Valid UserSecurityDto userSecurityDto, BindingResult result) {  //Valid- włączam walidację dla hasła
+        service.addUserDetails(userSecurityDto, result);
         return "usersaved";
     }
 }
