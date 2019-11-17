@@ -3,9 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Strona główna</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
 </head>
 <body>
-
 <p>Zalogowany jako: <label type="text" th:text="${username}"/></p>
+
+<form th:action="@{/addpost}" method="post" th:object="${postToAdd}">
+    <div class="form-group">
+        <label>Co chciałbyś opublikować?</label>
+        <textarea class="form-control" rows="5" th:field="*{message}"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj nowy post</button>
+</form>
+
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Data utworzenia:</th>
+        <th scope="col">Opublikowany przez: </th>
+        <th scope="col">Message</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${allPosts}">
+        <form th:action="@{/deletepost}" method="post" th:object="${post}">
+            <td>tu będzie data</td>
+            <td th:text="${post.getUser()}"></td>
+            <td th:text="${post.getMessage()}"></td>
+
+            <td>
+                <button type="submit" value="remove">Remove</button>
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+
 </body>
 </html>

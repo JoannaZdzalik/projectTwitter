@@ -58,6 +58,10 @@ public class User {
         this.age = age;
     }
 
+    @Override
+    public String toString() {
+        return name + " " + surname;
+    }
     //   private boolean isBanned; opcja dla admina
 
 }

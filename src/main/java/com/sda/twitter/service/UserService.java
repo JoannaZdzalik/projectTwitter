@@ -25,11 +25,6 @@ public class UserService {
 
     public void addUser(UserSecurityDto userSecurityDto) {
         UserSecurity userSec = mapper.map(userSecurityDto, UserSecurity.class);
-        System.out.println("Zmapowany user: "
-                + userSec.getId() + " "
-                + userSec.getName() + " "
-                + userSec.getSurname() + " "
-                + userSec.getAge());
         userSec.setPassword(bCryptPasswordEncoder.encode(userSec.getPassword()));
         userSec.setRole("ROLE_USER");
         userSecurityRepository.save(userSec);
