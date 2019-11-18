@@ -1,5 +1,6 @@
 package com.sda.twitter.model.entity;
 
+import com.sda.twitter.model.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,6 @@ public class UserSecurity extends User {
     private String login;
     private String password;
     private String role;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

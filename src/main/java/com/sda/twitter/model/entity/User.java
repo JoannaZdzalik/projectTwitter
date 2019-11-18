@@ -2,11 +2,11 @@ package com.sda.twitter.model.entity;
 
 import javax.persistence.*;
 import java.util.List;
-import com.sda.twitter.model.activity.Comment;
-import lombok.Getter;
-import lombok.Setter;
 
+import com.sda.twitter.model.Status;
+import com.sda.twitter.model.activity.Comment;
 import com.sda.twitter.model.activity.Post;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name="user")
@@ -20,7 +20,9 @@ public class User {
     private String surname;
     private int age;
 
-    @OneToMany(mappedBy = "user")
+
+
+    @OneToMany( cascade = CascadeType.ALL, mappedBy = "user")
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user")
@@ -62,6 +64,6 @@ public class User {
     public String toString() {
         return name + " " + surname;
     }
-    //   private boolean isBanned; opcja dla admina
+
 
 }

@@ -1,6 +1,7 @@
 package com.sda.twitter.service;
 
 import com.sda.twitter.model.activity.Post;
+import com.sda.twitter.model.entity.User;
 import com.sda.twitter.repository.PostRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,13 @@ public class PostService {
         newPost.setCreationDate(new Date());
         postRepository.save(newPost);
     }
+
+//    public void addNewPost(Post post, User user){
+//        Post newPost = mapper.map(post, Post.class);
+//        newPost.setCreationDate(new Date());
+//        newPost.setUser(user);
+//        postRepository.save(newPost);
+//    }
 
     public void deletePost(Post post) {
         postRepository.deleteById(post.getId());

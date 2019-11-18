@@ -20,11 +20,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-//                .antMatchers("/adduserform*")
-//                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")//
+              /*  .antMatchers("/addpost*")
+                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")*/
+                .antMatchers("/usersaved*")
+                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/mainpage*")
                 .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers("/showusers")
+                .antMatchers("/users")
                 .hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().permitAll()
                 .and()

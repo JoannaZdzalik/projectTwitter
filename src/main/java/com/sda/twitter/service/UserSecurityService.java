@@ -49,6 +49,10 @@ public class UserSecurityService {
                 .getAuthentication().getPrincipal()).getUsername();
     }
 
+//    public Long getLoggedUserId() {
+//        return
+//    }
+
     private boolean checkAuthorities(UserSecurityDto userSecurityDto) {
         return SecurityContextHolder
                 .getContext()
@@ -70,5 +74,6 @@ public class UserSecurityService {
     private boolean loginExists(UserSecurityDto userSecurityDto) {
         return userDetailsRepository.countByLogin(userSecurityDto.getLogin()) > 0;
     }
+
 
 }

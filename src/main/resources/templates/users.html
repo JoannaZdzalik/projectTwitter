@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Użytkownicy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<table class="table">
+    <thead class="thead-dark">
+    <tr class="table-light">
+        <th scope="col">Imie</th>
+        <th scope="col">Nazwisko</th>
+        <th scope="col">Login</th>
+        <th scope="col">Status</th>
+        <th scope="col">Zablokowany do: </th>
+        <th scope="col">Akcja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${allUsers}">
+        <form th:action="@{/blockuser}" method="post" th:object="${user}">
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.surname}"></td>
+            <td th:text="${user.login}"></td>
+            <td>Jego status z enuma</td>
+            <td>tu będzie do kiedy zablokowany</td>
+            <td>
+                <input type = "hidden" name = "id" th:value="${user.id}"/>
+                <button type="submit" class="btn btn-danger" value="remove">Zablokuj</button>
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
