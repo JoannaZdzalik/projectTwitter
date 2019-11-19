@@ -33,20 +33,19 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="post : ${allPosts}">
+    <tr th:each="post: ${allPosts}">
         <form th:action="@{/deletepost}" method="post" th:object="${post}">
-            <td th:text="${post.getCreationDate()}"></td>
-             <td th:text="${post.getUser()}"></td>
-            <td th:text="${post.getMessage()}"></td>
+            <td th:text="${post.creationDate}"></td>
+             <td th:text="${post.user}"></td>
+            <td th:text="${post.message}"></td>
 
             <td>
-               <!-- <input type = "hidden" name = "id" th:value="${post.getId()}"/>-->
+               <!-- <input type = "hidden" name="id" th:value="${post.id}"/>-->
                 <button type="submit" class="btn btn-outline-danger" value="remove">Remove</button>
             </td>
         </form>
     </tr>
     </tbody>
 </table>
-
 </body>
 </html>

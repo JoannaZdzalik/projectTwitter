@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +22,10 @@ public class PostService {
     @Autowired
     private ModelMapper mapper;
 
-    public void addNewPost(Post post){
+    public void addNewPost(Post post) {
         Post newPost = mapper.map(post, Post.class);
         newPost.setCreationDate(new Date());
+
         postRepository.save(newPost);
     }
 
@@ -39,9 +42,11 @@ public class PostService {
 
     public List<Post> getAllPosts() {
         List<Post> posts = postRepository.findAll();
-        return posts.stream().map(u -> mapper
+        posts.stream().map(u -> mapper
                 .map(u, Post.class))
                 .collect(Collectors.toList());
+        Collections.reverse(posts);
+        return posts;
 
     }
 }
