@@ -1,7 +1,9 @@
 package com.sda.twitter.service;
 
+import com.sda.twitter.model.activity.Comment;
 import com.sda.twitter.model.activity.Post;
 import com.sda.twitter.model.entity.User;
+import com.sda.twitter.repository.CommentRepository;
 import com.sda.twitter.repository.PostRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,20 @@ public class PostService {
     private PostRepository postRepository;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     public void addNewPost(Post post) {
         Post newPost = mapper.map(post, Post.class);
         newPost.setCreationDate(new Date());
-
         postRepository.save(newPost);
+    }
+
+    public void addNewComment(Comment comment) {
+        Comment newComment = mapper.map(comment, Comment.class);
+        commentRepository.save(newComment);
     }
 
 //    public void addNewPost(Post post, User user){
@@ -40,6 +49,10 @@ public class PostService {
         postRepository.deleteById(post.getId());
     }
 
+    public void deleteComment(Comment comment) {
+        commentRepository.deleteById(comment.getId());
+    }
+
     public List<Post> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         posts.stream().map(u -> mapper
@@ -49,4 +62,12 @@ public class PostService {
         return posts;
 
     }
+
+    public List<Comment> getAllComments() {
+        List<Comment> comments = commentRepository.findAll();
+        return comments.stream().map(u->mapper
+                .map(u, Comment.class))
+                .collect(Collectors.toList());
+    }
+
 }

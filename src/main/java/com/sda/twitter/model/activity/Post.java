@@ -23,7 +23,7 @@ public class Post {
 
     private String message;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments;
 
     private Date creationDate;

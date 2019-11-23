@@ -3,25 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <title>Strona główna</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<p>Zalogowany jako: <label type="text" th:text="${username}"/></p>
+<p> Zalogowany jako: <label type="text" th:text="${username}"/></p>
+
+<form action="/login?logout">
+    <button type="submit" class="btn btn-outline-dark">Wyloguj</button>
+</form>
 
 <form action="/users">
-    <button type="submit" class="btn btn-outline-light">Wszyscy użytkownicy</button>
+    <button type="submit" class="btn btn-outline-success">Wszyscy użytkownicy</button>
 </form>
 
 <form th:action="@{/addpost}" method="post" th:object="${postToAdd}">
     <div class="form-group">
         <label>Co chciałbyś opublikować?</label>
         <textarea class="form-control" rows="5" th:field="*{message}"></textarea>
-      <!-- <input type = "hidden" name = "id" th:field="*{user.getId()}"/>-->
+        <!-- <input type = "hidden" name = "id" th:field="*{user.getId()}"/>-->
     </div>
-    <button type="submit" class="btn btn-primary">Dodaj nowy post</button>
+    <button type="submit" class="btn btn-success">Dodaj nowy post</button>
+    <p></p>
 </form>
 
+<div class="container border border-dark" th:each="post: ${allPosts}" style="background-color: rgba(0,0,255,0.1);">
+    <form th:action="@{/deletepost}" method="post" th:object="${post}">
+        <div class="row bg-secondary text-white">
+            <div class="col-sm">
+                <p>Opublikowany przez: <label th:text="${post.user}"/></p>
+            </div>
+            <div class="col-sm">
+                <p> Utworzono: <label th:text="${post.creationDate}"/></p>
+            </div>
+            <div class="col-sm">
+                <div class="btn-group" role="group" aria-label="Action">
+                    <th>
+                        <input type="hidden" name="id" th:value="${post.id}"/>
+                        <button type="submit" class="btn btn-warning btn-sm" value="remove">Edit</button>
+                    </th>
+                    <th>
+                        <input type="hidden" name="id" th:value="${post.id}"/>
+                        <button type="submit" class="btn btn-warning btn-sm" value="remove">Remove</button>
+                    </th>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <td th:text="${post.message}"></td>
+        </div>
+        <div class="row">
+            <div class="accordion " id="accordionExample">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="false" aria-controls="collapseOne">
+                                Komentarze:
+                            </button>
+                        </h2>
+                    </div>
 
+                    <div id="collapseOne" class="collapse show" aria-labelledby="Komentarze"
+                         data-parent="#accordionExample">
+                        <div class="card-body">
+                            Tutaj będą umieszczone komentarze.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapseTwo"
+                                    aria-expanded="" aria-controls="collapseTwo">
+                                Dodaj komentarz....
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <form th:action="@{/addcomment}" method="post" th:object="${commentToAdd}">
+                                <div class="form-group">
+                        <textarea class="form-control" rows="5" placeholder="Napisz komentarz..."
+                                  th:field="*{message}"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success">Opublikuj</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p></p>
+    <p></p>
+    <p></p>
+</div>
+
+<p></p>
+<p></p>
+<p></p>
 
 <table class="table">
     <thead class="thead-dark">
@@ -36,16 +118,19 @@
     <tr th:each="post: ${allPosts}">
         <form th:action="@{/deletepost}" method="post" th:object="${post}">
             <td th:text="${post.creationDate}"></td>
-             <td th:text="${post.user}"></td>
+            <td th:text="${post.user}"></td>
             <td th:text="${post.message}"></td>
 
             <td>
-               <!-- <input type = "hidden" name="id" th:value="${post.id}"/>-->
-                <button type="submit" class="btn btn-outline-danger" value="remove">Remove</button>
+                <input type="hidden" name="id" th:value="${post.id}"/>
+                <button type="submit" class="btn btn-danger" value="remove">Remove</button>
+                <!--   <button type="submit" class="btn btn-warning" value="edit">Edit</button>-->
             </td>
         </form>
     </tr>
     </tbody>
 </table>
+
+
 </body>
 </html>

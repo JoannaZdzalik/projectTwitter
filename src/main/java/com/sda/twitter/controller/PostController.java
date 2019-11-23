@@ -1,5 +1,6 @@
 package com.sda.twitter.controller;
 
+import com.sda.twitter.model.activity.Comment;
 import com.sda.twitter.model.activity.Post;
 import com.sda.twitter.model.entity.User;
 import com.sda.twitter.service.PostService;
@@ -24,13 +25,22 @@ public class PostController {
         model.addAttribute("username", userSecurityService.getLoggedUserLogin());
         model.addAttribute("allPosts", service.getAllPosts());
         model.addAttribute("postToAdd", new Post());
+        model.addAttribute("allComments", service.getAllComments());
+        model.addAttribute("commentToAdd",new Comment());
         return "mainpage";
     }
 
     @PostMapping("/addpost")
     public String addNewPost(@ModelAttribute("postToAdd") Post post) {
-        System.out.println("dodajemy nowy post: " + post.getMessage() + " written by: " + post.getUser().getName());
+        System.out.println("dodajemy nowy post: " + post.getMessage() + " written by: ");
         service.addNewPost(post);
+        return "mainpage";
+    }
+
+    @PostMapping("/addcomment")
+    public String addNewComment(@ModelAttribute("commentToAdd") Comment comment) {
+        System.out.println("dodajemy nowy komentarz: " + comment.getMessage() + " written by: " +comment.getUser() + " to post nr: " + comment.getPost().getId());
+        service.addNewComment(comment);
         return "mainpage";
     }
 
