@@ -1,8 +1,6 @@
 package com.sda.twitter.controller;
 
-import com.sda.twitter.model.dto.UserDto;
 import com.sda.twitter.model.dto.UserSecurityDto;
-import com.sda.twitter.model.entity.UserSecurity;
 import com.sda.twitter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,11 +15,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     @Autowired
-    private UserService service;
+    private UserService userService;
 
     @RequestMapping("/users")
     public String userView(Model model) {
-        model.addAttribute("allUsers", service.getAllUsers());
+        model.addAttribute("allUsers", userService.getAllUsers());
+       // model.addAttribute("user", userService.getLoggedUser());
         return "users";
     }
 
@@ -33,7 +32,7 @@ public class UserController {
     @PostMapping("/adduser")
     public String addNewUser(@ModelAttribute UserSecurityDto userSecurityDto) {
         System.out.println("Dodajemy użytkownika: " + userSecurityDto.getName() + " " + userSecurityDto.getSurname() + " " +userSecurityDto.getAge());
-        service.addUser(userSecurityDto);
+        userService.addUser(userSecurityDto);
         return "usersaved";
     }
 

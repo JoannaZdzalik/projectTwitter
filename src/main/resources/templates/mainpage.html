@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Strona główna</title>
@@ -13,7 +15,7 @@
     <button type="submit" class="btn btn-outline-dark">Wyloguj</button>
 </form>
 
-<form action="/users">
+<form action="/users" sec:authorize="hasRole('ROLE_ADMIN')"  >
     <button type="submit" class="btn btn-outline-success">Wszyscy użytkownicy</button>
 </form>
 
@@ -36,7 +38,7 @@
             <div class="col-sm">
                 <p> Utworzono: <label th:text="${post.creationDate}"/></p>
             </div>
-            <div class="col-sm">
+            <div class="col-sm" th:if="${user == post.getUser() or username=='admin' }">
                 <div class="btn-group" role="group" aria-label="Action">
                     <th>
                         <input type="hidden" name="id" th:value="${post.id}"/>
@@ -57,8 +59,8 @@
                 <div class="card">
                     <div class="card-header" id="headingOne">
                         <h2 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
-                                    aria-expanded="false" aria-controls="collapseOne">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#allComments"
+                                    aria-expanded="true" aria-controls="collapseOne">
                                 Komentarze:
                             </button>
                         </h2>
@@ -67,26 +69,40 @@
                     <div id="collapseOne" class="collapse show" aria-labelledby="Komentarze"
                          data-parent="#accordionExample">
                         <div class="card-body">
-                            Tutaj będą umieszczone komentarze.
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-                                    data-target="#collapseTwo"
-                                    aria-expanded="" aria-controls="collapseTwo">
-                                Dodaj komentarz....
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                        <div class="card-body">
+                            <table class="table table-sm table-striped">
+                                <tbody>
+                                <tr th:each="comment: ${allComments}">
+                                    <td th:text="${comment.user}"> pisze...</td>
+                                    <td th:text="${comment.message}"></td>
+
+                                    <div class="btn-group" role="group" aria-label="Action">
+                                        <form th:action="@{/editcomment}" method="post" th:object="${comment}">
+                                            <th th:if="${user == comment.getUser()}">
+                                                <input type="hidden" name="id" th:value="${comment.id}"/>
+                                                <button type="submit" class="btn btn-outline-warning btn-sm"
+                                                        value="edit">
+                                                    Edit
+                                                </button>
+                                            </th>
+                                        </form>
+                                        <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
+                                            <th th:if="${user == comment.getUser()}">
+                                                <input type="hidden" name="id" th:value="${comment.id}"/>
+                                                <button type="submit" class="btn btn-outline-warning btn-sm"
+                                                        value="remove">
+                                                    Remove
+                                                </button>
+                                            </th>
+                                        </form>
+                                    </div>
+                                </tr>
+                                </tbody>
+                            </table>
                             <form th:action="@{/addcomment}" method="post" th:object="${commentToAdd}">
                                 <div class="form-group">
-                        <textarea class="form-control" rows="5" placeholder="Napisz komentarz..."
+                        <textarea class="form-control" rows="2" placeholder="Napisz komentarz..."
                                   th:field="*{message}"></textarea>
+                                    <input type="hidden" name="postId" th:value="${post.id}"/>
                                 </div>
                                 <button type="submit" class="btn btn-success">Opublikuj</button>
                             </form>
@@ -100,37 +116,3 @@
     <p></p>
     <p></p>
 </div>
-
-<p></p>
-<p></p>
-<p></p>
-
-<table class="table">
-    <thead class="thead-dark">
-    <tr>
-        <th scope="col">Data utworzenia:</th>
-        <th scope="col">Opublikowany przez:</th>
-        <th scope="col">Message</th>
-        <th scope="col">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="post: ${allPosts}">
-        <form th:action="@{/deletepost}" method="post" th:object="${post}">
-            <td th:text="${post.creationDate}"></td>
-            <td th:text="${post.user}"></td>
-            <td th:text="${post.message}"></td>
-
-            <td>
-                <input type="hidden" name="id" th:value="${post.id}"/>
-                <button type="submit" class="btn btn-danger" value="remove">Remove</button>
-                <!--   <button type="submit" class="btn btn-warning" value="edit">Edit</button>-->
-            </td>
-        </form>
-    </tr>
-    </tbody>
-</table>
-
-
-</body>
-</html>

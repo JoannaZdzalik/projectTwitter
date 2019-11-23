@@ -21,7 +21,6 @@ public class User {
     private int age;
 
 
-
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "user")
     private List<Post> posts;
 
