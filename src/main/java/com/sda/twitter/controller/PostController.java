@@ -3,6 +3,7 @@ package com.sda.twitter.controller;
 import com.sda.twitter.model.activity.Comment;
 import com.sda.twitter.model.activity.Post;
 import com.sda.twitter.model.dto.CommentDto;
+import com.sda.twitter.model.entity.User;
 import com.sda.twitter.service.PostService;
 import com.sda.twitter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,12 @@ public class PostController {
 
     @GetMapping("/mainpage")
     public String mainPage(Model model) {
-        model.addAttribute("username", userService.getLoggedUserLogin());
-        model.addAttribute("user", userService.getLoggedUser());
         model.addAttribute("allPosts", postService.getAllPosts());
         model.addAttribute("postToAdd", new Post());
         model.addAttribute("allComments", postService.getAllComments());
         model.addAttribute("commentToAdd",new Comment());
+        model.addAttribute("username", userService.getLoggedUserLogin());
+        model.addAttribute("user", userService.getLoggedUser());
         return "mainpage";
     }
 
@@ -50,13 +51,13 @@ public class PostController {
     @PostMapping("/deletepost")
     public String deletePost(@ModelAttribute("post") Post post) {
         postService.deletePost(post);
-        return "mainpage";
+        return "redirect:mainpage";
     }
 
     @PostMapping("/deletecomment")
     public String deleteComment(@ModelAttribute("comment") Comment comment) {
         postService.deleteComment(comment);
-        return "mainpage";
+        return "redirect:mainpage";
     }
 
 //    @PostMapping("/editpost")

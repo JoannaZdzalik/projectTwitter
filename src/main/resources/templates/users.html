@@ -25,8 +25,8 @@
             <td th:text="${user.name}"></td>
             <td th:text="${user.surname}"></td>
             <td th:text="${user.login}"></td>
-            <td>Jego status z enuma</td>
-            <td>tu będzie do kiedy zablokowany</td>
+            <td th:text="${user.status}"></td>
+            <td th:text="${user.blockedDate}"></td>
             <td>
                <input type = "hidden" name = "id" th:value="${user.id}"/>
                 <button type="submit" class="btn btn-danger" value="remove">Zablokuj</button>

@@ -36,17 +36,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/login-process")
-                .defaultSuccessUrl("/mainpage")
+                .defaultSuccessUrl("/userverification")
                 .and()
                 .logout().logoutSuccessUrl("/index");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(bCryptPasswordEncoder.encode("admin"))
-                .roles("ADMIN");
+//        auth.inMemoryAuthentication()
+//                .withUser("admin")
+//                .password(bCryptPasswordEncoder.encode("admin"))
+//                .roles("ADMIN");
         auth.jdbcAuthentication()
                 .usersByUsernameQuery("select u.login, u.password, 1 from usersecurity u where u.login=?") //jedynka oznacza że jest aktywny
                 .authoritiesByUsernameQuery("select u.login, u.role, 1 from usersecurity u where u.login=?")

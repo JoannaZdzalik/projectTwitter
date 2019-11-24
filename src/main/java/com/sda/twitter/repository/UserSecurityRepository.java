@@ -10,4 +10,5 @@ public interface UserSecurityRepository extends JpaRepository<UserSecurity, Long
     Long countByLogin(String login);
 
     Optional<User> findByLogin(String name);
+
 }

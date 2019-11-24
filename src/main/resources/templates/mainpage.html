@@ -15,7 +15,7 @@
     <button type="submit" class="btn btn-outline-dark">Wyloguj</button>
 </form>
 
-<form action="/users" sec:authorize="hasRole('ROLE_ADMIN')"  >
+<form action="/users" sec:authorize="hasRole('ROLE_ADMIN')">
     <button type="submit" class="btn btn-outline-success">Wszyscy użytkownicy</button>
 </form>
 
@@ -23,14 +23,12 @@
     <div class="form-group">
         <label>Co chciałbyś opublikować?</label>
         <textarea class="form-control" rows="5" th:field="*{message}"></textarea>
-        <!-- <input type = "hidden" name = "id" th:field="*{user.getId()}"/>-->
     </div>
     <button type="submit" class="btn btn-success">Dodaj nowy post</button>
     <p></p>
 </form>
 
-<div class="container border border-dark" th:each="post: ${allPosts}" style="background-color: rgba(0,0,255,0.1);">
-    <form th:action="@{/deletepost}" method="post" th:object="${post}">
+<div class="container border border-dark" th:each="post: ${allPosts}" th:object="${post}" style="background-color: rgba(0,0,255,0.1);">
         <div class="row bg-secondary text-white">
             <div class="col-sm">
                 <p>Opublikowany przez: <label th:text="${post.user}"/></p>
@@ -38,16 +36,26 @@
             <div class="col-sm">
                 <p> Utworzono: <label th:text="${post.creationDate}"/></p>
             </div>
-            <div class="col-sm" th:if="${user == post.getUser() or username=='admin' }">
+            <div class="col-sm">
                 <div class="btn-group" role="group" aria-label="Action">
-                    <th>
+                    <form th:action="@{/editpost}" method="post">
+                    <th th:if="${user == post.getUser()}" sec:authorize="hasRole('ROLE_USER')" >
                         <input type="hidden" name="id" th:value="${post.id}"/>
                         <button type="submit" class="btn btn-warning btn-sm" value="remove">Edit</button>
                     </th>
-                    <th>
+                    </form>
+                    <form th:action="@{/deletepost}" method="post">
+                    <th th:if="${user == post.getUser()}" sec:authorize="hasRole('ROLE_USER')">
                         <input type="hidden" name="id" th:value="${post.id}"/>
                         <button type="submit" class="btn btn-warning btn-sm" value="remove">Remove</button>
                     </th>
+                    </form>
+                    <form th:action="@{/deletepost}" method="post">
+                    <th sec:authorize="hasRole('ROLE_ADMIN')">
+                        <input type="hidden" name="id" th:value="${post.id}"/>
+                        <button type="submit" class="btn btn-warning btn-sm" value="remove">Remove</button>
+                    </th>
+                    </form>
                 </div>
             </div>
         </div>
@@ -65,28 +73,38 @@
                             </button>
                         </h2>
                     </div>
-
                     <div id="collapseOne" class="collapse show" aria-labelledby="Komentarze"
                          data-parent="#accordionExample">
                         <div class="card-body">
                             <table class="table table-sm table-striped">
                                 <tbody>
-                                <tr th:each="comment: ${allComments}">
-                                    <td th:text="${comment.user}"> pisze...</td>
+                                <tr th:each="comment: ${allComments}" th:if="${post.getId() == comment.getPostId()}">
+                                    <td th:text="${comment.user}"></td>
                                     <td th:text="${comment.message}"></td>
 
                                     <div class="btn-group" role="group" aria-label="Action">
                                         <form th:action="@{/editcomment}" method="post" th:object="${comment}">
-                                            <th th:if="${user == comment.getUser()}">
+                                            <th th:if="${user == comment.getUser()}" sec:authorize="hasRole('ROLE_USER')"
+                                                >
                                                 <input type="hidden" name="id" th:value="${comment.id}"/>
                                                 <button type="submit" class="btn btn-outline-warning btn-sm"
-                                                        value="edit">
-                                                    Edit
+                                                        value="edit">Edit
                                                 </button>
                                             </th>
                                         </form>
                                         <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
-                                            <th th:if="${user == comment.getUser()}">
+                                            <th th:if="${user == comment.getUser()}" sec:authorize="hasRole('ROLE_USER')"
+                                                >
+                                                <input type="hidden" name="id" th:value="${comment.id}"/>
+                                                <button type="submit" class="btn btn-outline-warning btn-sm"
+                                                        value="remove">
+                                                    Remove
+                                                </button>
+                                            </th>
+                                        </form>
+                                        <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
+                                            <th sec:authorize="hasRole('ROLE_ADMIN')"
+                                            >
                                                 <input type="hidden" name="id" th:value="${comment.id}"/>
                                                 <button type="submit" class="btn btn-outline-warning btn-sm"
                                                         value="remove">
@@ -99,11 +117,9 @@
                                 </tbody>
                             </table>
                             <form th:action="@{/addcomment}" method="post" th:object="${commentToAdd}">
-                                <div class="form-group">
                         <textarea class="form-control" rows="2" placeholder="Napisz komentarz..."
                                   th:field="*{message}"></textarea>
-                                    <input type="hidden" name="postId" th:value="${post.id}"/>
-                                </div>
+                                <input type="hidden" name="postId" th:value="${post.id}"/>
                                 <button type="submit" class="btn btn-success">Opublikuj</button>
                             </form>
                         </div>
@@ -111,7 +127,6 @@
                 </div>
             </div>
         </div>
-    </form>
     <p></p>
     <p></p>
     <p></p>

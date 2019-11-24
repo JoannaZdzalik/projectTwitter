@@ -5,10 +5,7 @@ import com.sda.twitter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -20,8 +17,20 @@ public class UserController {
     @RequestMapping("/users")
     public String userView(Model model) {
         model.addAttribute("allUsers", userService.getAllUsers());
-       // model.addAttribute("user", userService.getLoggedUser());
         return "users";
+    }
+
+    @GetMapping("/userverification")
+    public String verifyUserAccount() {
+       if(userService.checkIsUserBanned()) {
+           return "userverificationfailed";
+       }
+       return "redirect:mainpage";
+    }
+
+    @GetMapping("/userverificationfailed")
+    public String userIsBlocked() {
+        return "userverificationfailed";
     }
 
     @GetMapping("/adduserform")
@@ -34,6 +43,12 @@ public class UserController {
         System.out.println("Dodajemy użytkownika: " + userSecurityDto.getName() + " " + userSecurityDto.getSurname() + " " +userSecurityDto.getAge());
         userService.addUser(userSecurityDto);
         return "usersaved";
+    }
+
+    @PostMapping("/blockuser")
+    public String banUser(@ModelAttribute UserSecurityDto userSecurityDto){
+        userService.blockUser(userSecurityDto);
+        return "redirect:users";
     }
 
 }

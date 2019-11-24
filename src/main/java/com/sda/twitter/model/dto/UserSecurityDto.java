@@ -3,6 +3,7 @@ package com.sda.twitter.model.dto;
 import com.sda.twitter.model.Status;
 
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 public class UserSecurityDto extends UserDto {
 
@@ -12,7 +13,23 @@ public class UserSecurityDto extends UserDto {
     protected String password;
     protected String role;
     protected Status status;
+    protected Date blockedDate;
 
+    public Date getBlockedDate() {
+        return blockedDate;
+    }
+
+    public void setBlockedDate(Date blockedDate) {
+        this.blockedDate = blockedDate;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public String getLogin() {
         return login;
