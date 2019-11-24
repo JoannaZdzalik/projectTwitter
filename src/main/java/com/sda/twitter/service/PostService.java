@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +42,8 @@ public class PostService {
     }
 
     public void addNewComment(CommentDto comment) {
-        Post post = postRepository.findById(comment.getPostId()).get(); // orElseThrow(
+     //   Post post = postRepository.findById(comment.getPostId()).get();// orElseThrow
+        Post post = postRepository.findById(comment.getPostId()).orElseThrow(()->new RuntimeException("Unable to find a post"));
         Comment newComment = mapper.map(comment, Comment.class);
         newComment.setUser(userService.getLoggedUser());
         newComment.setPost(post);
@@ -56,7 +58,6 @@ public class PostService {
         commentRepository.deleteById(comment.getId());
     }
 
-
     public List<Post> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         posts.stream().map(u -> mapper
@@ -69,10 +70,8 @@ public class PostService {
 
     public List<CommentDto> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
-        return comments.stream().map(u->mapper
+        return comments.stream().map(u -> mapper
                 .map(u, CommentDto.class))
                 .collect(Collectors.toList());
     }
-
-
 }

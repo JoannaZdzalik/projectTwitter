@@ -40,7 +40,6 @@ public class UserController {
 
     @PostMapping("/adduser")
     public String addNewUser(@ModelAttribute UserSecurityDto userSecurityDto) {
-        System.out.println("Dodajemy użytkownika: " + userSecurityDto.getName() + " " + userSecurityDto.getSurname() + " " +userSecurityDto.getAge());
         userService.addUser(userSecurityDto);
         return "usersaved";
     }

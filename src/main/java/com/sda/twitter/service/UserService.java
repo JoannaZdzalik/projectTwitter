@@ -30,11 +30,11 @@ public class UserService {
     private PasswordEncoder bCryptPasswordEncoder;
 
     public void addUser(UserSecurityDto userSecurityDto) {
-        validateUser(userSecurityDto);
         UserSecurity userSec = mapper.map(userSecurityDto, UserSecurity.class);
         userSec.setPassword(bCryptPasswordEncoder.encode(userSec.getPassword()));
         userSec.setRole("ROLE_USER");
         userSec.setStatus(Status.ACTIVE);
+        validateUser(userSecurityDto);
         userSecurityRepository.save(userSec);
     }
 
@@ -48,28 +48,17 @@ public class UserService {
     public String getLoggedUserLogin() {
         return ((UserDetails) SecurityContextHolder
                 .getContext()
-                .getAuthentication().getPrincipal()).getUsername(); //username to mój login
+                .getAuthentication().getPrincipal()).getUsername();
     }
 
     public User getLoggedUser() {
-        return userSecurityRepository.findByLogin(getLoggedUserLogin()).get(); //dodać or else throw
-    }
-
-    private boolean checkAuthorities(UserSecurityDto userSecurityDto) {
-        return SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getAuthorities()
-                .toArray()[0].toString()
-                .equals(userSecurityDto.getRole());
+        return userSecurityRepository.findByLogin(getLoggedUserLogin()).orElseThrow(()-> new RuntimeException("User not found"));
+       // return userSecurityRepository.findByLogin(getLoggedUserLogin()).get();
     }
 
     private void validateUser(UserSecurityDto userSecurityDto) {
         if (loginExists(userSecurityDto)) {
             throw new RuntimeException("This login already exists!");
-        }
-        if (!checkAuthorities(userSecurityDto)) {
-            throw new RuntimeException("Wrong role!");
         }
     }
 
@@ -78,7 +67,7 @@ public class UserService {
     }
 
     public void blockUser(UserSecurityDto userSecurityDto) {
-        UserSecurity userSec = userSecurityRepository.findById(userSecurityDto.getId()).get(); //orElseThrow
+        UserSecurity userSec = userSecurityRepository.findById(userSecurityDto.getId()).orElseThrow(()-> new RuntimeException("User not found")); //or else throw
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 5);
         Date blockedDate = cal.getTime();
@@ -91,18 +80,13 @@ public class UserService {
         UserSecurity user = (UserSecurity)getLoggedUser();
         if(user.getBlockedDate() == null) {
             return false;
+        } else if(new Date().after(user.getBlockedDate()) ){ //&& user.getStatus() ==Status.BANNED jeśli chcę zostawić sobie info że był zablokowany
+            user.setStatus(Status.ACTIVE);
+            user.setBlockedDate(null);
+            userSecurityRepository.save(user);
+            return false;
         }
         return new Date().before(user.getBlockedDate());
     }
-    public void checkIsUserBanned(UserSecurityDto userSecurityDto) {
-        UserSecurity userSec = mapper.map(userSecurityDto, UserSecurity.class);
-        Date currentDate = new Date();
-        if (currentDate.compareTo(userSec.getBlockedDate()) >0) {
-            userSec.setBlockedDate(null);
-            userSec.setStatus(Status.ACTIVE);
-        }
-        userSecurityRepository.save(userSec);
-    }
 
-// if currentdate < blocked date powinno dąć się zalogować
 }
