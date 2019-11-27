@@ -3,6 +3,7 @@ package com.sda.twitter.controller;
 import com.sda.twitter.model.activity.Comment;
 import com.sda.twitter.model.activity.Post;
 import com.sda.twitter.model.dto.CommentDto;
+import com.sda.twitter.model.dto.PostDto;
 import com.sda.twitter.model.entity.User;
 import com.sda.twitter.service.PostService;
 import com.sda.twitter.service.UserService;
@@ -34,7 +35,7 @@ public class PostController {
     }
 
     @PostMapping("/addpost")
-    public String addNewPost(@ModelAttribute("postToAdd") Post post) {
+    public String addNewPost(@ModelAttribute("postToAdd") PostDto post) {
         System.out.println("dodajemy nowy post: " + post.getMessage() + " written by: ");
         postService.addNewPost(post);
         return "redirect:mainpage";
@@ -49,26 +50,26 @@ public class PostController {
 
 
     @PostMapping("/deletepost")
-    public String deletePost(@ModelAttribute("post") Post post) {
+    public String deletePost(@ModelAttribute("post") PostDto post) {
         postService.deletePost(post);
         return "redirect:mainpage";
     }
 
     @PostMapping("/deletecomment")
-    public String deleteComment(@ModelAttribute("comment") Comment comment) {
+    public String deleteComment(@ModelAttribute("comment") CommentDto comment) {
         postService.deleteComment(comment);
         return "redirect:mainpage";
     }
 
 //    @PostMapping("/editpost")
-//    public String editPost(@ModelAttribute("post") Post post) {
+//    public String editPost(@ModelAttribute("post") PostDto post) {
 //        postService.editPost(post);
-//        return "mainpage";
+//        return "redirect:mainpage";
 //    }
 //
 //    @PostMapping("/editcomment")
-//    public String editComment(@ModelAttribute("comment") Comment comment) {
+//    public String editComment(@ModelAttribute("comment") CommentDto comment) {
 //        postService.editComment(comment);
-//        return "mainpage";
+//        return "redirect:mainpage";
 //    }
 }

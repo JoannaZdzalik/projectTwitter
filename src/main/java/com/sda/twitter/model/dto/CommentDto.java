@@ -8,7 +8,7 @@ public class CommentDto {
     private Long id;
     private String message;
     private User user;
-    private Post post;
+   // private Post post;
     private Long postId;
 
     public Long getPostId() {
@@ -43,11 +43,4 @@ public class CommentDto {
         this.user = user;
     }
 
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
 }

@@ -34,7 +34,7 @@ public class PostService {
     @Autowired
     private UserService userService;
 
-    public void addNewPost(Post post) {
+    public void addNewPost(PostDto post) {
         Post newPost = mapper.map(post, Post.class);
         newPost.setCreationDate(new Date());
         newPost.setUser(userService.getLoggedUser());
@@ -42,7 +42,7 @@ public class PostService {
     }
 
     public void addNewComment(CommentDto comment) {
-     //   Post post = postRepository.findById(comment.getPostId()).get();// orElseThrow
+     //   Post post = postRepository.findById(comment.getPostId()).get();// orElseThrow od razu zwraca mi posta a nie optionala
         Post post = postRepository.findById(comment.getPostId()).orElseThrow(()->new RuntimeException("Unable to find a post"));
         Comment newComment = mapper.map(comment, Comment.class);
         newComment.setUser(userService.getLoggedUser());
@@ -50,21 +50,25 @@ public class PostService {
         commentRepository.save(newComment);
     }
 
-    public void deletePost(Post post) {
+    public void deletePost(PostDto post) {
         postRepository.deleteById(post.getId());
     }
 
-    public void deleteComment(Comment comment) {
+    public void deleteComment(CommentDto comment) {
         commentRepository.deleteById(comment.getId());
     }
 
-    public List<Post> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        posts.stream().map(u -> mapper
+//    public void editComment(CommentDto comment){ //on już ma ustawionego usera, post itd, trzeba mu tylko zmienić message
+//        Comment updatedComment =mapper.map(comment, Comment.class);
+//        updatedComment.setMessage(updatedMessage);
+//        commentRepository.save(updatedComment);
+//    }
+
+    public List<PostDto> getAllPosts() {
+        List<Post> posts = postRepository.findAllByOrderByCreationDateDesc();
+        return posts.stream().map(u -> mapper
                 .map(u, PostDto.class))
                 .collect(Collectors.toList());
-        Collections.reverse(posts);
-        return posts;
 
     }
 
