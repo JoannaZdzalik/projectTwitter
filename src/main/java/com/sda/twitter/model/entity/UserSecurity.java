@@ -25,4 +25,8 @@ public class UserSecurity extends User {
     @Enumerated(EnumType.STRING)
     private Status status;
     private Date blockedDate;
+
+    public Date getBlockedDate() {
+        return blockedDate;
+    }
 }

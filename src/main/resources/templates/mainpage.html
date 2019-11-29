@@ -8,16 +8,47 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
 <body>
-<p> Zalogowany jako: <label type="text" th:text="${username}"/></p>
 
-<form action="/login?logout">
-    <button type="submit" class="btn btn-outline-dark">Wyloguj</button>
-</form>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/profile">
+        <img src="../images/aa.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse w-100 order-3 dual-collapse2" id="navbarNavDropdown">
+        <ul class="navbar-nav mr-auto">
+                    <span class="navbar-text text-dark">Witaj, <label type="text" th:text="${username}"/>!
+    </span>
+            <li class="nav-item dropdown ">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Menu
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/profile">Twój profil</a>
+                    <a class="dropdown-item" href="/users" sec:authorize="hasRole('ROLE_ADMIN')">Wszyscy użytkownicy</a>
+                    <a class="dropdown-item" href="/login?logout">Wyloguj</a>
+                </div>
+            </li>
+        </ul>
 
-<form action="/users" sec:authorize="hasRole('ROLE_ADMIN')">
-    <button type="submit" class="btn btn-outline-success">Wszyscy użytkownicy</button>
-</form>
+    </div>
+</nav>
+<p></p>
 
 <form th:action="@{/addpost}" method="post" th:object="${postToAdd}">
     <div class="form-group">
@@ -28,124 +59,160 @@
     <p></p>
 </form>
 
-<div class="container border border-dark" th:each="post: ${allPosts}" th:object="${post}" style="background-color: rgba(0,0,255,0.1);">
-        <div class="row bg-secondary text-white">
-            <div class="col-sm">
-                <p>Opublikowany przez: <label th:text="${post.user}"/></p>
-            </div>
-            <div class="col-sm">
-                <p> Utworzono: <label th:text="${post.creationDate}"/></p>
-            </div>
-            <div class="col-sm">
-                <div class="btn-group" role="group" aria-label="Action">
-                    <form th:action="@{/editpost}" method="post">
-                    <th th:if="${user == post.getUser()}" sec:authorize="hasRole('ROLE_USER')" >
+<div class="container border border-dark" th:each="post: ${allPosts}" th:object="${post}"
+     style="background-color: rgba(0,0,255,0.1);">
+    <div class="row bg-secondary text-white">
+        <div class="col-sm">
+            <p>Opublikowany przez: <label th:text="${post.user}"/></p>
+        </div>
+        <div class="col-sm">
+            <p> Utworzono: <label th:text="${post.creationDate}"/></p>
+        </div>
+        <div class="col-sm">
+            <div class="btn-group" role="group" aria-label="Action">
+                <form th:action="@{/editpost}" method="post">
+                    <th th:if="${user == post.getUser()}" sec:authorize="hasRole('ROLE_USER')">
                         <input type="hidden" name="id" th:value="${post.id}"/>
-                        <button type="submit" class="btn btn-warning btn-sm" value="remove">Edit</button>
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                data-target="#editPostModal"
+                        >Edit
+                        </button>
+                        <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog"
+                             aria-labelledby="modalTitlePost" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <form th:action="@{/editpost}" method="post"> <--th:object="${post}">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalTitlePost">Edytuj treść posta</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea class="form-control" rows="5" name="editedPost"
+                                                      th:text="${post.message}"> <!--th:field="*{message}"--> </textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                Zamknij
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">Zapisz</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </th>
-                    </form>
-                    <form th:action="@{/deletepost}" method="post">
+                </form>
+                <form th:action="@{/deletepost}" method="post">
                     <th th:if="${user == post.getUser()}" sec:authorize="hasRole('ROLE_USER')">
                         <input type="hidden" name="id" th:value="${post.id}"/>
                         <button type="submit" class="btn btn-warning btn-sm" value="remove">Remove</button>
                     </th>
-                    </form>
-                    <form th:action="@{/deletepost}" method="post">
+                </form>
+                <form th:action="@{/deletepost}" method="post">
                     <th sec:authorize="hasRole('ROLE_ADMIN')">
                         <input type="hidden" name="id" th:value="${post.id}"/>
                         <button type="submit" class="btn btn-warning btn-sm" value="remove">Remove</button>
                     </th>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
-        <div class="row">
-            <td th:text="${post.message}"></td>
-        </div>
-        <div class="row">
-            <div class="accordion " id="accordionExample">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#allComments"
-                                    aria-expanded="true" aria-controls="collapseOne">
-                                Komentarze:
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapseOne" class="collapse show" aria-labelledby="Komentarze"
-                         data-parent="#accordionExample">
-                        <div class="card-body">
-                            <table class="table table-sm table-striped">
-                                <tbody>
-                                <tr th:each="comment: ${allComments}" th:if="${post.getId() == comment.getPostId()}">
-                                    <td th:text="${comment.user}"></td>
-                                    <td th:text="${comment.message}"></td>
-
-                                    <div class="btn-group" role="group" aria-label="Action">
-                                        <form th:action="@{/editcomment}" method="post" th:object="${comment}">
-                                            <th th:if="${user == comment.getUser()}" sec:authorize="hasRole('ROLE_USER')"
-                                                >
-                                                <input type="hidden" name="id" th:value="${comment.id}"/>
-                                                <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="modal" data-target="#exampleModalLong"
-                                                        value="edit">Edit
-                                                </button>
-                                                <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLongTitle">Edytuj komentarz</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                               Tu wstawię textarea
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                                                                <button type="submit" class="btn btn-primary">Zapisz</button>
-                                                            </div>
+    </div>
+    <div class="row">
+        <td th:text="${post.message}"></td>
+    </div>
+    <div class="row">
+        <div class="accordion " id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne" style="background-color: rgba(0,0,255,0.1);">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#allComments"
+                                aria-expanded="false" aria-controls="allComments">
+                            Komentarze:
+                        </button>
+                    </h2>
+                </div>
+                <div id="allComments" class="collapse show" aria-labelledby="Komentarze"
+                     data-parent="#accordionExample">
+                    <div class="card-body">
+                        <table class="table table-sm table-striped">
+                            <tbody>
+                            <tr th:each="comment: ${allComments}" th:if="${post.getId() == comment.getPostId()}">
+                                <td th:text="${comment.user}"></td>
+                                <td th:text="${comment.message}"></td>
+                                <div class="btn-group" role="group" aria-label="Action">
+                                    <th th:if="${user == comment.getUser()}" sec:authorize="hasRole('ROLE_USER')">
+                                        <input type="hidden" name="id" th:value="${comment.id}"/>
+                                        <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="modal"
+                                                data-target="#editCommentModal"
+                                                value="edit">Edit
+                                        </button>
+                                        <div class="modal fade" id="editCommentModal" tabindex="-1" role="dialog"
+                                             aria-labelledby="modalTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <form th:action="@{/editcomment}" method="post">
+                                                        <--th:object="${commentToEdit}"-->
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalTitle">Edytuj
+                                                                komentarz</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
                                                         </div>
-                                                    </div>
+                                                        <div class="modal-body">
+                                                            <textarea class="form-control" rows="5" name="editedComment"
+                                                                      th:text="${comment.message}"> <--th:field="*{message}"></textarea>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Zamknij
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary">Zapisz
+                                                            </button>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                            </th>
-                                        </form>
-                                        <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
-                                            <th th:if="${user == comment.getUser()}" sec:authorize="hasRole('ROLE_USER')"
-                                                >
-                                                <input type="hidden" name="id" th:value="${comment.id}"/>
-                                                <button type="submit" class="btn btn-outline-warning btn-sm"
-                                                        value="remove">
-                                                    Remove
-                                                </button>
-                                            </th>
-                                        </form>
-                                        <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
-                                            <th sec:authorize="hasRole('ROLE_ADMIN')"
-                                            >
-                                                <input type="hidden" name="id" th:value="${comment.id}"/>
-                                                <button type="submit" class="btn btn-outline-warning btn-sm"
-                                                        value="remove">
-                                                    Remove
-                                                </button>
-                                            </th>
-                                        </form>
-                                    </div>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <form th:action="@{/addcomment}" method="post" th:object="${commentToAdd}">
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
+                                        <th th:if="${user == comment.getUser()}" sec:authorize="hasRole('ROLE_USER')"
+                                        >
+                                            <input type="hidden" name="id" th:value="${comment.id}"/>
+                                            <button type="submit" class="btn btn-outline-warning btn-sm"
+                                                    value="remove">
+                                                Remove
+                                            </button>
+                                        </th>
+                                    </form>
+                                    <form th:action="@{/deletecomment}" method="post" th:object="${comment}">
+                                        <th sec:authorize="hasRole('ROLE_ADMIN')"
+                                        >
+                                            <input type="hidden" name="id" th:value="${comment.id}"/>
+                                            <button type="submit" class="btn btn-outline-warning btn-sm"
+                                                    value="remove">
+                                                Remove
+                                            </button>
+                                        </th>
+                                    </form>
+                                </div>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <form th:action="@{/addcomment}" method="post" th:object="${commentToAdd}">
                         <textarea class="form-control" rows="2" placeholder="Napisz komentarz..."
                                   th:field="*{message}"></textarea>
-                                <input type="hidden" name="postId" th:value="${post.id}"/>
-                                <button type="submit" class="btn btn-success">Opublikuj</button>
-                            </form>
-                        </div>
+                            <input type="hidden" name="postId" th:value="${post.id}"/>
+                            <button type="submit" class="btn btn-success">Opublikuj</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     <p></p>
     <p></p>
     <p></p>

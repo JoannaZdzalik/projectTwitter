@@ -20,6 +20,11 @@ public class UserController {
         return "users";
     }
 
+    @RequestMapping("/profile")
+    public String profileView(){
+        return "profile";
+    }
+
     @GetMapping("/userverification")
     public String verifyUserAccount() {
        if(userService.checkIsUserBanned()) {
@@ -29,9 +34,15 @@ public class UserController {
     }
 
     @GetMapping("/userverificationfailed")
-    public String userIsBlocked() {
+    public String userIsBlocked(Model model) {
+        model.addAttribute("blockedUser", userService.getLoggedUserSecurity());
         return "userverificationfailed";
     }
+
+//    @GetMapping("/userverificationfailed")
+//    public String userIsBlocked() {
+//        return "userverificationfailed";
+//    }
 
     @GetMapping("/adduserform")
     public ModelAndView createNewUser() {

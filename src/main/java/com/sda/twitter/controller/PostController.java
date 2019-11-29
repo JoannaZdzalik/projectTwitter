@@ -29,9 +29,23 @@ public class PostController {
         model.addAttribute("postToAdd", new Post());
         model.addAttribute("allComments", postService.getAllComments());
         model.addAttribute("commentToAdd",new Comment());
+      //  model.addAttribute("commentToEdit", postService.getCurrentComment());
         model.addAttribute("username", userService.getLoggedUserLogin());
         model.addAttribute("user", userService.getLoggedUser());
         return "mainpage";
+    }
+
+
+    @PostMapping("/editpost")
+    public String editPost(@ModelAttribute("postToEdit") PostDto post) {
+        postService.editPost(post);
+        return "redirect:mainpage";
+    }
+
+    @PostMapping("/editcomment")
+    public String editComment(@ModelAttribute("commentToEdit") CommentDto comment){
+        postService.editComment(comment);
+        return "redirect:mainpage";
     }
 
     @PostMapping("/addpost")
@@ -60,16 +74,4 @@ public class PostController {
         postService.deleteComment(comment);
         return "redirect:mainpage";
     }
-
-//    @PostMapping("/editpost")
-//    public String editPost(@ModelAttribute("post") PostDto post) {
-//        postService.editPost(post);
-//        return "redirect:mainpage";
-//    }
-//
-//    @PostMapping("/editcomment")
-//    public String editComment(@ModelAttribute("comment") CommentDto comment) {
-//        postService.editComment(comment);
-//        return "redirect:mainpage";
-//    }
 }

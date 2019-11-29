@@ -53,7 +53,11 @@ public class UserService {
 
     public User getLoggedUser() {
         return userSecurityRepository.findByLogin(getLoggedUserLogin()).orElseThrow(()-> new RuntimeException("User not found"));
-       // return userSecurityRepository.findByLogin(getLoggedUserLogin()).get();
+
+    }
+
+    public UserSecurity getLoggedUserSecurity() {
+        return userSecurityRepository.findDistinctByLogin(getLoggedUserLogin()).orElseThrow(()-> new RuntimeException("User not found"));
     }
 
     private void validateUser(UserSecurityDto userSecurityDto) {

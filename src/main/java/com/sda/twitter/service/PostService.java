@@ -4,19 +4,14 @@ import com.sda.twitter.model.activity.Comment;
 import com.sda.twitter.model.activity.Post;
 import com.sda.twitter.model.dto.CommentDto;
 import com.sda.twitter.model.dto.PostDto;
-import com.sda.twitter.model.entity.User;
-import com.sda.twitter.model.entity.UserSecurity;
 import com.sda.twitter.repository.CommentRepository;
 import com.sda.twitter.repository.PostRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,8 +37,8 @@ public class PostService {
     }
 
     public void addNewComment(CommentDto comment) {
-     //   Post post = postRepository.findById(comment.getPostId()).get();// orElseThrow od razu zwraca mi posta a nie optionala
-        Post post = postRepository.findById(comment.getPostId()).orElseThrow(()->new RuntimeException("Unable to find a post"));
+        //   Post post = postRepository.findById(comment.getPostId()).get();// orElseThrow od razu zwraca mi posta a nie optionala
+        Post post = postRepository.findById(comment.getPostId()).orElseThrow(() -> new RuntimeException("Unable to find a post"));
         Comment newComment = mapper.map(comment, Comment.class);
         newComment.setUser(userService.getLoggedUser());
         newComment.setPost(post);
@@ -58,11 +53,15 @@ public class PostService {
         commentRepository.deleteById(comment.getId());
     }
 
-//    public void editComment(CommentDto comment){ //on już ma ustawionego usera, post itd, trzeba mu tylko zmienić message
-//        Comment updatedComment =mapper.map(comment, Comment.class);
-//        updatedComment.setMessage(updatedMessage);
-//        commentRepository.save(updatedComment);
-//    }
+    public void editComment(CommentDto comment) { //on już ma ustawionego usera, post itd, trzeba mu tylko zmienić message
+        Comment updatedComment = mapper.map(comment, Comment.class);
+        commentRepository.save(updatedComment);
+    }
+
+    public void editPost(PostDto post) {
+        Post updatedPost = mapper.map(post, Post.class);
+        postRepository.save(updatedPost);
+    }
 
     public List<PostDto> getAllPosts() {
         List<Post> posts = postRepository.findAllByOrderByCreationDateDesc();
@@ -78,4 +77,9 @@ public class PostService {
                 .map(u, CommentDto.class))
                 .collect(Collectors.toList());
     }
+
+//    public Comment getCurrentComment(CommentDto comment) {
+//        return commentRepository.findById(comment.getId()).orElseThrow(() -> new RuntimeException("Coś jest nie tak z metodą getCurrentComment"));
+//    }
+
 }
